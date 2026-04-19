@@ -1,0 +1,49 @@
+.title-text-p {
+	-fx-font-family: "Noto Sans";
+	-fx-font-size: 12px;
+    -fx-font-weight: bold;
+	-fx-fill: #175C8E;
+}
+
+.title-text-s {
+	-fx-font-family: "Noto Sans";
+	-fx-font-size: 12px;
+    -fx-font-weight: bold;
+	-fx-fill: #F7941D;
+}
+
+.title-text-s2 {
+	-fx-font-family: "Noto Sans";
+	-fx-font-size: 12px;
+    -fx-font-weight: bold;
+	-fx-fill: #E0531F;
+}
+
+.title-text {
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+}
+
+.window-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+    -fx-padding: 8 14 8 14;
+}
+
+.window-btn:hover {
+    -fx-background-color: #4A4A4A;
+}
+
+#closeBtn:hover {
+    -fx-background-color: #E0531F;
+}
+
+.main-container {
+    -fx-background-color: #303030;
+    -fx-background-radius: 15;
+}
