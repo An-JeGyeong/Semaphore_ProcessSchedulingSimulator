@@ -1,0 +1,328 @@
+/* =========================
+   옵션 패널 전체
+========================= */
+.options {
+    -fx-background-color: #262626;
+    -fx-border-color: #303030;
+    -fx-border-width: 1;
+}
+
+/* =========================
+   섹션 공통
+========================= */
+.option-section {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #303030;
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 12px;
+}
+
+.section-title {
+    -fx-padding: 15 0 8 0;
+    -fx-font-size: 14px;
+    -fx-font-family: "Noto Sans";
+    -fx-text-fill: #A6A6A6;
+}
+
+.section-list {
+    -fx-spacing: 7;
+    -fx-padding: 0 10 8 10;
+    -fx-fill-width: true;
+}
+
+/* =========================
+   Core 영역
+========================= */
+.core-row {
+    -fx-background-color: #262626;
+    -fx-border-color: #303030;
+    -fx-border-width: 1;
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+
+    -fx-padding: 6 10 6 10;
+    -fx-spacing: 18;
+    -fx-alignment: center-left;
+
+    -fx-max-width: Infinity;
+}
+
+/* =========================
+   라디오 버튼
+========================= */
+.radio-button {
+    -fx-font-family: "Noto Sans";
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 12px;
+}
+
+.radio-button .radio {
+    -fx-background-color: #2a2a2a;
+    -fx-border-color: #175C8E;
+    -fx-border-width: 1;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+}
+
+.radio-button .dot {
+    -fx-background-color: transparent;
+    -fx-scale-x: 0;
+    -fx-scale-y: 0;
+}
+
+.radio-button:selected .radio {
+    -fx-background-color: #2a2a2a, #175C8E;
+    -fx-background-insets: 0, 2;
+}
+
+/* =========================
+   ComboBox (Algorithm)
+========================= */
+.algorithm-combo {
+    -fx-background-color: #262626;
+    -fx-border-color: #3A3A3A;
+    -fx-border-width: 1;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+
+    -fx-pref-height: 36;
+    -fx-max-width: Infinity;
+
+    -fx-text-fill: #A6A6A6;
+}
+
+.algorithm-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #A6A6A6;
+    -fx-font-size: 12px;
+}
+
+/* 드롭다운 */
+.combo-box-popup .list-view {
+    -fx-background-color: #262626;
+    -fx-border-color: #3A3A3A;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #262626;
+    -fx-text-fill: #A6A6A6;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #333333;
+    -fx-text-fill: #F7941D;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #F7941D;
+    -fx-text-fill: white;
+}
+
+/* =========================
+   입력 줄 (🔥 핵심)
+========================= */
+.quantum-row {
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+
+    /* 높이 고정 → 늘어나는 문제 방지 */
+    -fx-min-height: 31;
+    -fx-pref-height: 31;
+    -fx-max-height: 31;
+}
+
+.quantum-label {
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 12px;
+    -fx-text-fill: #BDBDBD;
+
+    -fx-min-width: 50;
+    -fx-pref-width: 50;
+}
+
+.quantum-input {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 5;
+    -fx-border-color: #D0D0D0;
+    -fx-border-radius: 5;
+
+    -fx-text-fill: #000000;
+    -fx-alignment: center-right;
+
+    /* 🔥 입력칸 늘어남 방지 */
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+}
+
+/* =========================
+   버튼
+========================= */
+.action-btn {
+    -fx-background-radius: 5;
+    -fx-pref-height: 28;
+    -fx-max-width: Infinity;
+
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-family: "Noto Sans";
+
+    -fx-cursor: hand;
+}
+
+.run-btn {
+    -fx-background-color: #5F88C2;
+    -fx-background-radius: 5;
+
+    -fx-pref-height: 28;
+    -fx-max-width: Infinity;
+
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+
+    -fx-cursor: hand;
+}
+
+.add-btn { -fx-background-color: #F7941D; }
+.random-btn { -fx-background-color: #E0531F; }
+.update-btn { -fx-background-color: #82DF5A; }
+.delete-btn { -fx-background-color: #FF6B6B; }
+
+.add-btn:hover { -fx-background-color: #FFA733; }
+.random-btn:hover { -fx-background-color: #FF6430; }
+.update-btn:hover { -fx-background-color: #94F06F; }
+.delete-btn:hover { -fx-background-color: #FF7F7F; }
+.run-btn:hover { -fx-background-color: #6E9FE0; }
+
+/* =========================
+   RUN 영역 (하단 고정)
+========================= */
+.run-section {
+    -fx-padding: 10;
+
+    -fx-min-height: 70;
+    -fx-pref-height: 70;
+    -fx-max-height: 70;
+}
+
+/* 탭 부분 설정 */
+.custom-tab {
+    -fx-background-color: #262626;
+    -fx-background-radius: 5;
+    
+    -fx-min-width: 168;
+    -fx-pref-height: 24;
+}
+
+.selected-tab {
+    -fx-background-color: #3B3B3B;
+}
+
+.custom-tab-title {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+}
+
+.tab-close-btn {
+    -fx-background-color: transparent;
+
+    -fx-min-width: 20;
+    -fx-pref-width: 20;
+    -fx-max-width: 20;
+
+    -fx-min-height: 20;
+    -fx-pref-height: 20;
+    -fx-max-height: 20;
+
+    -fx-padding: 0;
+    -fx-opacity: 0;
+    -fx-cursor: hand;
+}
+
+.custom-tab:hover .tab-close-btn {
+    -fx-opacity: 1;
+}
+
+.tab-add-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #A6A6A6;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+}
+
+/* 테이블 설정 */
+
+.process-table {
+    -fx-background-color: #212121;
+    -fx-control-inner-background: #212121;
+    -fx-padding: 0;
+}
+
+/* 헤더 전체 */
+.process-table .column-header-background {
+    -fx-background-color: #212121;
+}
+
+/* 헤더 칸 */
+.process-table .column-header {
+    -fx-background-color: #212121;
+    -fx-border-color: #303030;
+    -fx-border-width: 0 1 1 0;
+    -fx-pref-height: 19px;
+}
+
+/* 헤더 글자 */
+.process-table .column-header .label {
+    -fx-text-fill: #A6A6A6;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+    -fx-alignment: center;
+}
+
+/* 행 */
+.process-table .table-row-cell {
+    -fx-background-color: #212121;
+    -fx-border-color: #303030;
+    -fx-border-width: 0 0 1 0;
+    -fx-pref-height: 19px;
+}
+
+/* 짝수/홀수 행 색 동일 */
+.process-table .table-row-cell:odd,
+.process-table .table-row-cell:even {
+    -fx-background-color: #212121;
+}
+
+/* 셀 */
+.process-table .table-cell {
+    -fx-text-fill: #A6A6A6;
+    -fx-font-size: 12px;
+    -fx-alignment: center;
+    -fx-border-color: #303030;
+    -fx-border-width: 0 1 0 0;
+}
+
+/* 선택 효과 제거 */
+.process-table .table-row-cell:selected,
+.process-table .table-row-cell:selected .table-cell {
+    -fx-background-color: #212121;
+    -fx-text-fill: white;
+}
+
+/* 포커스 테두리 제거 */
+.process-table:focused {
+    -fx-background-insets: 0;
+    -fx-background-color: #212121;
+}
+
+/* 빈 영역 */
+.process-table .placeholder {
+    -fx-background-color: #212121;
+}
+
+.process-table .placeholder .label {
+    -fx-text-fill: transparent;
+}
