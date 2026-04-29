@@ -1,6 +1,5 @@
 package application;
-	
-import controller.MainController;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -18,22 +17,21 @@ public class Main extends Application {
 			loadFonts();
 
 			// FXML 파일을 로드해서 UI 생성
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
+			FXMLLoader loader = new FXMLLoader(
+					getClass().getResource("/view/main.fxml")
+			);
+			
 			Parent root = loader.load();
 			
 			// UI를 담을 Scene 생성
 			Scene scene = new Scene(root);
-			
 			scene.setFill(Color.TRANSPARENT);
 			
 			// 기본 타이틀바 제거 (커스텀 타이틀바 사용을 위해)
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
-
 			primaryStage.setScene(scene); // Scene을 창(Stage)에 연결
 			primaryStage.show(); // 창을 화면에 표시
-
-			MainController controller = loader.getController(); // FXML과 연결된 컨트롤러 가져오기
-			controller.setStage(primaryStage); // 컨트롤러에 Stage 전달 (창 제어 가능하게)
+			
 		} catch(Exception e) { 
 			e.printStackTrace();
 		}
