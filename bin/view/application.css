@@ -1,29 +1,12 @@
-.title-text-p {
-	-fx-font-family: "Noto Sans";
-	-fx-font-size: 12px;
-    -fx-font-weight: bold;
-	-fx-fill: #175C8E;
+/* Window shell */
+.main-container {
+    -fx-background-color: #303030;
+    -fx-background-radius: 5;
 }
 
-.title-text-s {
-	-fx-font-family: "Noto Sans";
-	-fx-font-size: 12px;
-    -fx-font-weight: bold;
-	-fx-fill: #F7941D;
-}
-
-.title-text-s2 {
-	-fx-font-family: "Noto Sans";
-	-fx-font-size: 12px;
-    -fx-font-weight: bold;
-	-fx-fill: #E0531F;
-}
-
-.title-text {
-    -fx-font-family: "Noto Sans";
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-fill: white;
+.title-bar-background,
+.status-bar {
+    -fx-background-color: #212121;
 }
 
 .window-btn {
@@ -43,7 +26,28 @@
     -fx-background-color: #E0531F;
 }
 
-.main-container {
-    -fx-background-color: #303030;
-    -fx-background-radius: 15;
+/* Title text */
+.title-text,
+.title-text-p,
+.title-text-s,
+.title-text-s2 {
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.title-text {
+    -fx-fill: white;
+}
+
+.title-text-p {
+    -fx-fill: #175C8E;
+}
+
+.title-text-s {
+    -fx-fill: #F7941D;
+}
+
+.title-text-s2 {
+    -fx-fill: #E0531F;
 }

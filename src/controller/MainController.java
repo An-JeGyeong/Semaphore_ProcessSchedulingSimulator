@@ -1,279 +1,391 @@
 package controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.beans.property.*;
-
 import model.AlgorithmType;
+import model.CoreConfig;
 import model.Process;
+import model.SchedulingResult;
+import service.SchedulingService;
 
 public class MainController {
 
-	@FXML private Pane titleBar;
-	@FXML private Button minBtn;
-	@FXML private Button maxBtn;
-	@FXML private Button closeBtn;
-	@FXML private ComboBox<AlgorithmType> algorithmCombo;
-	@FXML private ScrollPane ganttScrollPane;
-	@FXML private AnchorPane ganttPane;
-	
-	@FXML private TextField addAtInput;
-	@FXML private TextField addBtInput;
-	@FXML private TextField updateAtInput;
-	@FXML private TextField updateBtInput;
-	@FXML private ComboBox<String> updateProcessCombo;
-	@FXML private ComboBox<String> deleteProcessCombo;
-	
-	@FXML private TableView<Process> resultTable;
+	@FXML
+	private Pane titleBar;
+	@FXML
+	private Button minBtn;
+	@FXML
+	private Button maxBtn;
+	@FXML
+	private Button closeBtn;
+	@FXML
+	private ComboBox<AlgorithmType> algorithmCombo;
+	@FXML
+	private ToggleGroup coreGroup1;
+	@FXML
+	private ToggleGroup coreGroup2;
+	@FXML
+	private ToggleGroup coreGroup3;
+	@FXML
+	private ToggleGroup coreGroup4;
+	@FXML
+	private HBox simulationTabBar;
+	@FXML
+	private Button tabAddBtn;
+	@FXML
+	private ScrollPane ganttScrollPane;
+	@FXML
+	private AnchorPane ganttPane;
 
-	@FXML private TableColumn<Process, String> pidColumn;
-	@FXML private TableColumn<Process, Integer> atColumn;
-	@FXML private TableColumn<Process, Integer> btColumn;
-	@FXML private TableColumn<Process, Integer> wtColumn;
-	@FXML private TableColumn<Process, Integer> ttColumn;
-	@FXML private TableColumn<Process, Double> nttColumn;
+	@FXML
+	private TextField timeQuantumField;
+	@FXML
+	private TextField addAtInput;
+	@FXML
+	private TextField addBtInput;
+	@FXML
+	private TextField updateAtInput;
+	@FXML
+	private TextField updateBtInput;
+	@FXML
+	private ComboBox<String> updateProcessCombo;
+	@FXML
+	private ComboBox<String> deleteProcessCombo;
 
-	private final List<Process> processList = new ArrayList<>();
-	private final Random random = new Random();
+	@FXML
+	private TableView<Process> resultTable;
+	@FXML
+	private TableColumn<Process, String> pidColumn;
+	@FXML
+	private TableColumn<Process, Integer> atColumn;
+	@FXML
+	private TableColumn<Process, Integer> btColumn;
+	@FXML
+	private TableColumn<Process, Integer> wtColumn;
+	@FXML
+	private TableColumn<Process, Integer> ttColumn;
+	@FXML
+	private TableColumn<Process, Double> nttColumn;
 
-	private int processSequence = 1;
+	@FXML
+	private Label overviewAlgorithmValue;
+	@FXML
+	private Label overviewTimeQuantumValue;
+	@FXML
+	private Label overviewPCoreLabel;
+	@FXML
+	private Label overviewPCoreValue;
+	@FXML
+	private Label overviewECoreLabel;
+	@FXML
+	private Label overviewECoreValue;
+	@FXML
+	private Label overviewProcessCountValue;
+	@FXML
+	private Label overviewTotalTimeValue;
+	@FXML
+	private Label overviewThroughputValue;
+	@FXML
+	private Label overviewAvgWaitingValue;
+	@FXML
+	private Label overviewAvgTurnaroundValue;
+	@FXML
+	private Label overviewAvgResponseValue;
+	@FXML
+	private Label overviewCpuUtilizationValue;
+	@FXML
+	private Label overviewContextSwitchValue;
+	@FXML
+	private Label overviewIdleTimeValue;
 
-    private double xOffset;
-    private double yOffset;
-    private boolean draggingFromMaximized = false;
-    
-    private final GanttChartController ganttController = new GanttChartController();
-	
-    @FXML
-    public void initialize() {
-    	
-    	// 창 클릭 시, 클릭 위치 저장
-    	titleBar.setOnMousePressed(event -> {
-    	    Stage stage = (Stage) titleBar.getScene().getWindow();
+	private final List<Process> processList = new java.util.ArrayList<>();
+	private final GanttChartController ganttController = new GanttChartController();
+	private final SchedulingService schedulingService = new SchedulingService();
+	private final DialogController dialogController = new DialogController();
 
-    	    xOffset = event.getSceneX();
-    	    yOffset = event.getSceneY();
+	private CoreSelectionController coreSelectionController;
+	private ProcessFormController processFormController;
+	private ResultTableController resultTableController;
+	private OverviewController overviewController;
+	private SchedulingResult currentResult;
+	private List<String> currentCoreLabels = List.of();
+	private SimulationTabState activeTab;
+	private boolean loadingTab;
+	private SimulationTabController simulationTabController;
 
-    	    draggingFromMaximized = stage.isMaximized();
-    	});
+	@FXML
+	public void initialize() {
+		setupWindowControls();
+		setupAlgorithmCombo();
+		setupCoreOptions();
+		setupTable();
+		setupOverview();
+		setupProcessForm();
+		setupGanttViewport();
+		setupTabs();
+		drawGanttChartFrame();
+		updateOverview(null, 0);
+	}
 
-     // 창 드래그 이동
-        titleBar.setOnMouseDragged(event -> {
-            Stage stage = (Stage) titleBar.getScene().getWindow();
+	private void setupWindowControls() {
+		new WindowController(titleBar.getParent(), minBtn, maxBtn, closeBtn).initialize();
+	}
 
-            // 최대화 상태에서 아래로 드래그하면 복원
-            if (draggingFromMaximized) {
-                stage.setMaximized(false);
+	private void setupAlgorithmCombo() {
+		algorithmCombo.getItems().setAll(AlgorithmType.values());
+		algorithmCombo.setValue(AlgorithmType.FCFS);
+		algorithmCombo.valueProperty().addListener((observable, oldValue, newValue) -> updateOverview(null, 0));
+		timeQuantumField.textProperty().addListener((observable, oldValue, newValue) -> updateOverview(null, 0));
+	}
 
-                // 복원된 창이 마우스 아래 자연스럽게 오도록 위치 보정
-                xOffset = stage.getWidth() / 2;
-                yOffset = event.getSceneY();
+	private void setupCoreOptions() {
+		coreSelectionController = new CoreSelectionController(coreGroup1, coreGroup2, coreGroup3, coreGroup4);
+		coreSelectionController.addSelectionListener(() -> {
+			if (loadingTab) {
+				return;
+			}
+			currentResult = null;
+			currentCoreLabels = coreSelectionController.getSelectedCoreLabels();
+			drawGanttChartFrame();
+			updateOverview(null, 0);
+		});
+	}
 
-                draggingFromMaximized = false;
-            }
+	private void setupTable() {
+		resultTableController = new ResultTableController(
+				resultTable,
+				pidColumn,
+				atColumn,
+				btColumn,
+				wtColumn,
+				ttColumn,
+				nttColumn);
+		resultTableController.initialize();
+	}
 
-            stage.setX(event.getScreenX() - xOffset);
-            stage.setY(event.getScreenY() - yOffset);
-        });
-        
-        // 최소화
-        minBtn.setOnAction(event -> {
-            Stage stage = (Stage) minBtn.getScene().getWindow();
-            stage.setIconified(true);
-        });
-        
-        // 최대화, 복원 버튼
-        maxBtn.setOnAction(event -> {
-            Stage stage = (Stage) maxBtn.getScene().getWindow();
-            stage.setMaximized(!stage.isMaximized());
-        });
-        
-        // 닫기
-        closeBtn.setOnAction(event -> {
-            Stage stage = (Stage) closeBtn.getScene().getWindow();
-            stage.close();
-        });
-        
-        // 타이틀바 더블클릭 시 최대화, 복원
-        titleBar.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Stage stage = (Stage) titleBar.getScene().getWindow();
-                stage.setMaximized(!stage.isMaximized());
-            }
-        });
-        
-     // 화면 맨 위 근처로 드래그해서 놓으면 최대화
-        titleBar.setOnMouseReleased(event -> {
-            Stage stage = (Stage) titleBar.getScene().getWindow();
+	private void setupOverview() {
+		overviewController = new OverviewController(
+				algorithmCombo,
+				processList,
+				coreSelectionController,
+				timeQuantumField,
+				overviewAlgorithmValue,
+				overviewTimeQuantumValue,
+				overviewPCoreLabel,
+				overviewPCoreValue,
+				overviewECoreLabel,
+				overviewECoreValue,
+				overviewProcessCountValue,
+				overviewTotalTimeValue,
+				overviewThroughputValue,
+				overviewAvgWaitingValue,
+				overviewAvgTurnaroundValue,
+				overviewAvgResponseValue,
+				overviewCpuUtilizationValue,
+				overviewContextSwitchValue,
+				overviewIdleTimeValue);
+	}
 
-            if (event.getScreenY() <= 5) {
-                stage.setMaximized(true);
-            }
-        });
-        
-        setupAlgorithmCombo();
-        
-        setupTable();
-    }
-    
-    private void setupAlgorithmCombo() {
-    	algorithmCombo.getItems().addAll(AlgorithmType.values());
-    	algorithmCombo.setValue(AlgorithmType.FCFS);
-    }
-    
-    @FXML
-    private void handleAddProcess() {
-    	if (processList.size() >= 15) {
-            showWarning("프로세스 추가 제한", "프로세스는 최대 15개까지 추가할 수 있습니다.");
-            return;
-        }
+	private void setupProcessForm() {
+		processFormController = new ProcessFormController(
+				processList,
+				addAtInput,
+				addBtInput,
+				updateAtInput,
+				updateBtInput,
+				updateProcessCombo,
+				deleteProcessCombo,
+				dialogController,
+				this::refreshProcessTable);
+	}
 
-        if (addAtInput.getText().isBlank() || addBtInput.getText().isBlank()) {
-            showWarning("입력 오류", "Arrival Time과 Burst Time을 모두 입력하세요.");
-            return;
-        }
+	private void setupGanttViewport() {
+		ganttScrollPane.viewportBoundsProperty().addListener((observable, oldBounds, newBounds) -> redrawGanttChart());
+	}
 
-        int at;
-        int bt;
+	private void setupTabs() {
+		simulationTabController = new SimulationTabController(
+				simulationTabBar,
+				tabAddBtn,
+				new SimulationTabController.Listener() {
+					@Override
+					public void beforeTabChange() {
+						saveActiveTabState();
+					}
 
-        try {
-            at = Integer.parseInt(addAtInput.getText());
-            bt = Integer.parseInt(addBtInput.getText());
-        } catch (NumberFormatException e) {
-            showWarning("입력 오류", "Arrival Time과 Burst Time은 숫자만 입력할 수 있습니다.");
-            return;
-        }
+					@Override
+					public void afterTabSelected(SimulationTabState tab) {
+						activeTab = tab;
+						loadActiveTabState();
+					}
 
-        String pid = "P" + processSequence++;
+					@Override
+					public void onLastTabCloseRequested() {
+						dialogController.showWarning("경고", "최소 하나의 Simulation은 유지해야 합니다.");
+					}
+				});
+		simulationTabController.initialize();
+	}
+	private void saveActiveTabState() {
+		if (activeTab == null || processFormController == null || coreSelectionController == null) {
+			return;
+		}
 
-        Process process = new Process(pid, at, bt);
-        processList.add(process);
+		activeTab.setProcesses(processList);
+		activeTab.setProcessSequence(processFormController.getProcessSequence());
+		activeTab.setAlgorithm(algorithmCombo.getValue());
+		activeTab.setTimeQuantum(timeQuantumField.getText());
+		activeTab.setCoreTypes(coreSelectionController.getSelectedCoreTypes());
+		activeTab.setResult(currentResult);
+		activeTab.setCoreLabels(currentCoreLabels);
+	}
 
-        updateProcessCombo.getItems().add(pid);
-        deleteProcessCombo.getItems().add(pid);
+	private void loadActiveTabState() {
+		if (activeTab == null) {
+			return;
+		}
 
-        addAtInput.clear();
-        addBtInput.clear();
+		loadingTab = true;
+		processList.clear();
+		processList.addAll(activeTab.getProcesses());
+		processFormController.setProcessSequence(activeTab.getProcessSequence());
+		processFormController.reloadProcessCombos();
+		algorithmCombo.setValue(activeTab.getAlgorithm());
+		timeQuantumField.setText(activeTab.getTimeQuantum());
+		coreSelectionController.selectCoreTypes(activeTab.getCoreTypes());
+		currentResult = activeTab.getResult();
+		currentCoreLabels = new java.util.ArrayList<>(activeTab.getCoreLabels());
+		loadingTab = false;
 
-        refreshProcessTable();
-    }
-    
-    @FXML
-    private void handleRandomProcess() {
-    	if (processList.size() >= 15) {
-            showWarning("프로세스 추가 제한", "프로세스는 최대 15개까지 추가할 수 있습니다.");
-            return;
-        }
-    	
-        int countToAdd = Math.min(5, 15 - processList.size());
+		updateResultTable();
+		redrawGanttChart();
+		updateOverview(currentResult, currentResult == null ? 0 : getTotalTime(currentResult));
+	}
 
-        for (int i = 0; i < countToAdd; i++) {
-            int at = random.nextInt(31);      // 0 ~ 10
-            int bt = random.nextInt(20) + 1;  // 1 ~ 10
+	@FXML
+	private void handleAddProcess() {
+		processFormController.addProcess();
+	}
 
-            String pid = "P" + processSequence++;
+	@FXML
+	private void handleRandomProcess() {
+		processFormController.addRandomProcesses();
+	}
 
-            Process process = new Process(pid, at, bt);
-            processList.add(process);
+	@FXML
+	private void handleUpdateProcess() {
+		processFormController.updateProcess();
+	}
 
-            updateProcessCombo.getItems().add(pid);
-            deleteProcessCombo.getItems().add(pid);
-        }
+	@FXML
+	private void handleDeleteProcess() {
+		processFormController.deleteProcess();
+	}
 
-        refreshProcessTable();
-    }
-    
-    @FXML
-    private void handleUpdateProcess() {
-        String selectedPid = updateProcessCombo.getValue();
+	@FXML
+	private void handleRun() {
+		AlgorithmType algorithm = algorithmCombo.getValue();
+		List<String> selectedCoreLabels = coreSelectionController.getSelectedCoreLabels();
 
-        if (selectedPid == null) {
-            return;
-        }
+		if (algorithm == null) {
+			dialogController.showWarning("경고", "알고리즘을 선택하세요.");
+			return;
+		}
+		if (selectedCoreLabels.isEmpty()) {
+			dialogController.showWarning("경고", "하나 이상의 Core를 선택하세요.");
+			return;
+		}
+		if (processList.isEmpty()) {
+			dialogController.showWarning("경고", "프로세스를 먼저 추가하세요.");
+			return;
+		}
 
-        int at = Integer.parseInt(updateAtInput.getText());
-        int bt = Integer.parseInt(updateBtInput.getText());
+		int timeQuantum = 0;
+		if (algorithm == AlgorithmType.RR) {
+			Integer parsedTimeQuantum = processFormController.parsePositiveInt(timeQuantumField, "Time Quantum");
+			if (parsedTimeQuantum == null) {
+				return;
+			}
+			timeQuantum = parsedTimeQuantum;
+		}
 
-        for (Process process : processList) {
-            if (process.getPid().equals(selectedPid)) {
-                process.updateInput(at, bt);
-                break;
-            }
-        }
+		try {
+			List<CoreConfig> selectedCoreConfigs = coreSelectionController.getSelectedCoreConfigs();
+			SchedulingResult result = schedulingService.run(algorithm, processList, selectedCoreConfigs, timeQuantum);
+			currentResult = result;
+			currentCoreLabels = selectedCoreLabels;
+			drawGanttChart(result, selectedCoreLabels);
+			updateResultTable();
+			updateOverview(result, getTotalTime(result));
+		} catch (IllegalArgumentException e) {
+			dialogController.showWarning("실행 오류", e.getMessage());
+		}
+	}
 
-        updateAtInput.clear();
-        updateBtInput.clear();
+	private void drawGanttChart(SchedulingResult result, List<String> coreLabels) {
+		if (ganttPane != null) {
+			ganttController.draw(result, ganttPane, coreLabels, getGanttViewportHeight());
+		}
+	}
 
-        refreshProcessTable();
-    }
-    
-    @FXML
-    private void handleDeleteProcess() {
-        String selectedPid = deleteProcessCombo.getValue();
+	private void drawGanttChartFrame() {
+		if (ganttPane != null) {
+			ganttController.drawEmpty(ganttPane, coreSelectionController.getSelectedCoreLabels(), getGanttViewportHeight());
+		}
+	}
 
-        if (selectedPid == null) {
-            return;
-        }
+	private void redrawGanttChart() {
+		if (currentResult == null) {
+			drawGanttChartFrame();
+		} else {
+			drawGanttChart(currentResult, currentCoreLabels);
+		}
+	}
 
-        processList.removeIf(process -> process.getPid().equals(selectedPid));
+	private double getGanttViewportHeight() {
+		if (ganttScrollPane == null || ganttScrollPane.getViewportBounds().getHeight() <= 0) {
+			return 360;
+		}
+		return ganttScrollPane.getViewportBounds().getHeight();
+	}
 
-        updateProcessCombo.getItems().remove(selectedPid);
-        deleteProcessCombo.getItems().remove(selectedPid);
+	private void refreshProcessTable() {
+		currentResult = null;
+		currentCoreLabels = coreSelectionController.getSelectedCoreLabels();
+		resultTableController.setProcesses(processList);
+		drawGanttChartFrame();
+		updateOverview(null, 0);
+	}
 
-        updateProcessCombo.setValue(null);
-        deleteProcessCombo.setValue(null);
+	private void updateResultTable() {
+		resultTableController.setProcesses(processList);
+		resultTableController.refresh();
+	}
 
-        refreshProcessTable();
-    }
-    
-    @FXML
-    private void handleRun() {
-        ganttController.drawTest(ganttPane);
-    }
-    
-    private void setupTable() {
+	private void updateOverview(SchedulingResult result, int totalTime) {
+		if (overviewController != null) {
+			overviewController.update(result, () -> totalTime);
+		}
+	}
 
-        pidColumn.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue().getPid()));
+	private int getTotalTime(SchedulingResult result) {
+		return result.getGanttBlocks().stream()
+				.mapToInt(block -> block.getEnd())
+				.max()
+				.orElse(0);
+	}
 
-        atColumn.setCellValueFactory(data ->
-                new SimpleIntegerProperty(data.getValue().getArrivalTime()).asObject());
-
-        btColumn.setCellValueFactory(data ->
-                new SimpleIntegerProperty(data.getValue().getBurstTime()).asObject());
-
-        wtColumn.setCellValueFactory(data ->
-                new SimpleIntegerProperty(0).asObject());
-
-        ttColumn.setCellValueFactory(data ->
-                new SimpleIntegerProperty(0).asObject());
-
-        nttColumn.setCellValueFactory(data ->
-                new SimpleDoubleProperty(0.0).asObject());
-    }
-    
-    private void refreshProcessTable() {
-        resultTable.getItems().setAll(processList);
-    }
-    
-    private void showWarning(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 }
+

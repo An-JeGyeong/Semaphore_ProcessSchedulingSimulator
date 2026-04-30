@@ -8,6 +8,10 @@ public class Process {
 	private int burstTime;
 	private int remainingWork;
 	private int executedTime;
+	private int remainingTime;
+	private int waitingTime;
+	private int turnaroundTime;
+	private double normalizedTT;
 
 	public Process(String pid, int arrivalTime, int burstTime) {
 		this.pid = pid;
@@ -20,7 +24,7 @@ public class Process {
 		return pid;
 	}
 
-	public int getArrivalTime() {	
+	public int getArrivalTime() {
 		return arrivalTime;
 	}
 
@@ -36,6 +40,38 @@ public class Process {
 		return executedTime;
 	}
 
+	public int getRemainingTime() {
+		return remainingTime;
+	}
+
+	public void setRemainingTime(int remainingTime) {
+		this.remainingTime = remainingTime;
+	}
+
+	public int getWaitingTime() {
+		return waitingTime;
+	}
+
+	public void setWaitingTime(int waitingTime) {
+		this.waitingTime = waitingTime;
+	}
+
+	public int getTurnaroundTime() {
+		return turnaroundTime;
+	}
+
+	public void setTurnaroundTime(int turnaroundTime) {
+		this.turnaroundTime = turnaroundTime;
+	}
+
+	public double getNormalizedTT() {
+		return normalizedTT;
+	}
+
+	public void setNormalizedTT(double normalizedTT) {
+		this.normalizedTT = normalizedTT;
+	}
+
 	public void updateInput(int arrivalTime, int burstTime) {
 		this.arrivalTime = arrivalTime;
 		this.burstTime = burstTime;
@@ -43,8 +79,16 @@ public class Process {
 	}
 
 	public void reset() {
-		this.remainingWork = burstTime;
-		this.executedTime = 0;
+		remainingWork = burstTime;
+		executedTime = 0;
+		remainingTime = burstTime;
+		clearMetrics();
+	}
+
+	public void clearMetrics() {
+		waitingTime = 0;
+		turnaroundTime = 0;
+		normalizedTT = 0.0;
 	}
 
 	public void executeOneSecond(CoreConfig core) {
