@@ -49,8 +49,8 @@ final class ProcessFormController {
 	}
 
 	void addProcess() {
-		if (processList.size() >= MAX_PROCESS_COUNT) {
-			dialogController.showWarning("경고", "프로세스는 최대 15개까지 추가할 수 있습니다.");
+		if (!canAddProcess()) {
+			showMaxProcessWarning();
 			return;
 		}
 
@@ -60,21 +60,21 @@ final class ProcessFormController {
 			return;
 		}
 
-		addProcess(arrivalTime, burstTime);
-		addAtInput.clear();
-		addBtInput.clear();
-		refreshCallback.run();
+		if (addProcess(arrivalTime, burstTime)) {
+			addAtInput.clear();
+			addBtInput.clear();
+			refreshCallback.run();
+		}
 	}
 
 	void addRandomProcesses() {
-		if (processList.size() >= MAX_PROCESS_COUNT) {
-			dialogController.showWarning("경고", "프로세스는 최대 15개까지 추가할 수 있습니다.");
+		if (!canAddProcess()) {
+			showMaxProcessWarning();
 			return;
 		}
 
 		int countToAdd = Math.min(RANDOM_PROCESS_COUNT, MAX_PROCESS_COUNT - processList.size());
-
-		for (int i = 0; i < countToAdd; i++) {
+		for (int i = 0; i < countToAdd && canAddProcess(); i++) {
 			int arrivalTime = random.nextInt(RANDOM_MAX_ARRIVAL_TIME + 1);
 			int burstTime = random.nextInt(RANDOM_MAX_BURST_TIME) + 1;
 			addProcess(arrivalTime, burstTime);
@@ -152,12 +152,25 @@ final class ProcessFormController {
 		deleteProcessCombo.setValue(null);
 	}
 
-	private void addProcess(int arrivalTime, int burstTime) {
+	private boolean addProcess(int arrivalTime, int burstTime) {
+		if (!canAddProcess()) {
+			return false;
+		}
+
 		String pid = "P" + processSequence++;
 		Process process = new Process(pid, arrivalTime, burstTime);
 		processList.add(process);
 		updateProcessCombo.getItems().add(pid);
 		deleteProcessCombo.getItems().add(pid);
+		return true;
+	}
+
+	private boolean canAddProcess() {
+		return processList.size() < MAX_PROCESS_COUNT;
+	}
+
+	private void showMaxProcessWarning() {
+		dialogController.showWarning("경고", "프로세스는 최대 15개까지 추가할 수 있습니다.");
 	}
 
 	private Process findProcess(String pid) {

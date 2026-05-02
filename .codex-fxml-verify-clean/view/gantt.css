@@ -1,0 +1,103 @@
+/* Simulation and Gantt area */
+.simulation-tab-bar {
+    -fx-background-color: #262626;
+    -fx-padding: 4 4 4 4;
+}
+
+.gantt-canvas {
+    -fx-background-color: #212121;
+}
+
+.gantt-scroll-pane {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.gantt-scroll-pane .viewport {
+    -fx-background-color: #212121;
+}
+
+.gantt-scroll-pane .corner {
+    -fx-background-color: #212121;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: #212121;
+    -fx-pref-height: 34;
+    -fx-padding: 8 24 20 130;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .track {
+    -fx-background-color: #E8E8E8;
+    -fx-background-radius: 2;
+    -fx-pref-height: 3;
+    -fx-max-height: 3;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: #C85B34;
+    -fx-background-radius: 4;
+    -fx-pref-height: 5;
+    -fx-max-height: 5;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .increment-button,
+.gantt-scroll-pane .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .increment-arrow,
+.gantt-scroll-pane .scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-shape: "";
+}
+
+/* Tabs */
+.custom-tab {
+    -fx-background-color: #262626;
+    -fx-background-radius: 5;
+    -fx-min-width: 168;
+    -fx-pref-height: 24;
+}
+
+.selected-tab {
+    -fx-background-color: #3B3B3B;
+}
+
+.custom-tab-title {
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+}
+
+.tab-close-btn {
+    -fx-background-color: transparent;
+    -fx-min-width: 20;
+    -fx-pref-width: 20;
+    -fx-max-width: 20;
+    -fx-min-height: 20;
+    -fx-pref-height: 20;
+    -fx-max-height: 20;
+    -fx-padding: 0;
+    -fx-opacity: 0;
+    -fx-cursor: hand;
+}
+
+.custom-tab:hover .tab-close-btn {
+    -fx-opacity: 1;
+}
+
+.tab-add-btn {
+    -fx-background-color: transparent;
+    -fx-font-size: 20px;
+    -fx-text-fill: #A6A6A6;
+    -fx-cursor: hand;
+}

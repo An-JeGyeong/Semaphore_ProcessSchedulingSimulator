@@ -18,6 +18,7 @@ import model.AlgorithmType;
 import model.CoreConfig;
 import model.Process;
 import model.SchedulingResult;
+import model.SimulationTabState;
 import service.SchedulingService;
 
 public class MainController {
@@ -114,6 +115,7 @@ public class MainController {
 	private final GanttChartController ganttController = new GanttChartController();
 	private final SchedulingService schedulingService = new SchedulingService();
 	private final DialogController dialogController = new DialogController();
+	private final TomJerrySimulationWindow tomJerrySimulationWindow = new TomJerrySimulationWindow();
 
 	private CoreSelectionController coreSelectionController;
 	private ProcessFormController processFormController;
@@ -323,6 +325,16 @@ public class MainController {
 
 		try {
 			List<CoreConfig> selectedCoreConfigs = coreSelectionController.getSelectedCoreConfigs();
+			if (algorithm == AlgorithmType.CUSTOM) {
+				processList.forEach(Process::reset);
+				currentResult = new SchedulingResult(List.of());
+				currentCoreLabels = selectedCoreLabels;
+				drawGanttChartFrame();
+				updateResultTable();
+				updateOverview(currentResult, 0);
+				tomJerrySimulationWindow.show(processList, selectedCoreConfigs, this::updateCustomSimulationResult);
+				return;
+			}
 			SchedulingResult result = schedulingService.run(algorithm, processList, selectedCoreConfigs, timeQuantum);
 			currentResult = result;
 			currentCoreLabels = selectedCoreLabels;
@@ -332,6 +344,13 @@ public class MainController {
 		} catch (IllegalArgumentException e) {
 			dialogController.showWarning("실행 오류", e.getMessage());
 		}
+	}
+
+	private void updateCustomSimulationResult(SchedulingResult result) {
+		currentResult = result;
+		drawGanttChart(result, currentCoreLabels);
+		updateResultTable();
+		updateOverview(result, getTotalTime(result));
 	}
 
 	private void drawGanttChart(SchedulingResult result, List<String> coreLabels) {

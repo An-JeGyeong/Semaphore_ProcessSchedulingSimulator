@@ -9,6 +9,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import model.Process;
+import util.ProcessColorPalette;
 
 final class ResultTableController {
 

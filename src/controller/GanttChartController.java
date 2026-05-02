@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.GanttBlock;
 import model.SchedulingResult;
+import util.ProcessColorPalette;
 
 public class GanttChartController {
 
@@ -18,7 +19,6 @@ public class GanttChartController {
     private static final double LEFT_AXIS_WIDTH = 130;
     private static final double TOP_AXIS_HEIGHT = 72;
     private static final double RIGHT_PADDING = 24;
-    private static final double BOTTOM_PADDING = 64;
     private static final double TIME_SCALE = 52;
     private static final int MAX_CORE_COUNT = 4;
     private static final double ROW_HEIGHT = 56;
@@ -46,7 +46,6 @@ public class GanttChartController {
     private void drawChart(SchedulingResult result, AnchorPane ganttPane, List<String> coreLabels, double viewportHeight) {
         ganttPane.getChildren().clear();
 
-        int laneCount = Math.max(1, coreLabels.size());
         boolean hasResult = result != null && !result.getGanttBlocks().isEmpty();
         int maxTime = hasResult ? Math.max(DEFAULT_VISIBLE_TIME, findMaxTime(result)) : DEFAULT_VISIBLE_TIME;
         double chartWidth = hasResult

@@ -7,8 +7,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.AlgorithmType;
+import model.OverviewMetrics;
 import model.Process;
 import model.SchedulingResult;
+import service.OverviewMetricsCalculator;
 
 final class OverviewController {
 
@@ -70,7 +72,10 @@ final class OverviewController {
 		this.cpuUtilizationValue = cpuUtilizationValue;
 		this.contextSwitchValue = contextSwitchValue;
 		this.idleTimeValue = idleTimeValue;
-		this.metricsCalculator = new OverviewMetricsCalculator(processList, coreSelectionController);
+		this.metricsCalculator = new OverviewMetricsCalculator(
+				processList,
+				coreSelectionController::getSelectedCoreLabels,
+				coreSelectionController::countSelectedCoreType);
 	}
 
 	void update(SchedulingResult result, Supplier<Integer> totalTimeSupplier) {

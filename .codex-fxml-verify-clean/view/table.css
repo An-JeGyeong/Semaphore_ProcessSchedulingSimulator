@@ -1,0 +1,70 @@
+/* Result table area */
+.process-table {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 0;
+    -fx-control-inner-background: #212121;
+    -fx-padding: 0;
+}
+
+.process-table .virtual-flow,
+.process-table .clipped-container,
+.process-table .sheet {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.process-table .column-header-background,
+.process-table .column-header,
+.process-table .table-row-cell,
+.process-table .table-row-cell:odd,
+.process-table .table-row-cell:even,
+.process-table .placeholder {
+    -fx-background-color: #212121;
+}
+
+.process-table .column-header {
+    -fx-border-color: #303030;
+    -fx-border-width: 0 1 1 0;
+    -fx-pref-height: 19px;
+}
+
+.process-table .column-header .label {
+    -fx-alignment: center;
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 10px;
+    -fx-font-weight: normal;
+    -fx-text-fill: #A6A6A6;
+}
+
+.process-table .table-row-cell {
+    -fx-border-color: #303030;
+    -fx-border-width: 0 0 1 0;
+    -fx-pref-height: 19px;
+}
+
+.process-table .table-cell {
+    -fx-alignment: center;
+    -fx-border-color: #303030;
+    -fx-border-width: 0 1 0 0;
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 10px;
+    -fx-text-fill: #A6A6A6;
+}
+
+.process-table .table-row-cell:selected,
+.process-table .table-row-cell:selected .table-cell {
+    -fx-background-color: #212121;
+    -fx-text-fill: white;
+}
+
+.process-table:focused {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+}
+
+.process-table .placeholder .label {
+    -fx-text-fill: transparent;
+}

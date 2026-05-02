@@ -28,7 +28,9 @@
 .process-table .column-header {
     -fx-border-color: #303030;
     -fx-border-width: 0 1 1 0;
-    -fx-pref-height: 19px;
+    -fx-pref-height: 20px;
+    -fx-min-height: 20px;
+    -fx-max-height: 20px;
 }
 
 .process-table .column-header .label {
@@ -43,6 +45,8 @@
     -fx-border-color: #303030;
     -fx-border-width: 0 0 1 0;
     -fx-pref-height: 19px;
+    -fx-min-height: 19px;
+    -fx-max-height: 19px;
 }
 
 .process-table .table-cell {
