@@ -5,13 +5,18 @@ import java.util.List;
 
 public final class SimulationTabState {
 
+	// 각 Simulation 탭이 독립적으로 복원해야 하는 입력값과 실행 결과를 보관한다.
 	private final int id;
 	private final String name;
 	private List<Process> processes = new ArrayList<>();
 	private int processSequence = 1;
 	private AlgorithmType algorithm = AlgorithmType.FCFS;
 	private String timeQuantum = "";
-	private List<String> coreTypes = List.of("off", "off", "off", "off");
+	private List<String> coreTypes = List.of(
+			CoreType.OFF.getDisplayName(),
+			CoreType.OFF.getDisplayName(),
+			CoreType.OFF.getDisplayName(),
+			CoreType.OFF.getDisplayName());
 	private SchedulingResult result;
 	private List<String> coreLabels = List.of();
 

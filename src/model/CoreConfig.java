@@ -21,4 +21,8 @@ public class CoreConfig {
 	public boolean isEnabled() {
 		return coreType.isEnabled();
 	}
+
+	public String getLabel() {
+		return coreType.getDisplayName() + " " + coreId;
+	}
 }

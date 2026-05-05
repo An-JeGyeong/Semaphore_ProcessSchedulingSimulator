@@ -25,12 +25,13 @@
 <BorderPane minHeight="0.0" prefHeight="800.0" prefWidth="1280.0" styleClass="main-container" xmlns="http://javafx.com/javafx/21.0.10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
 
    <stylesheets>
-      <URL value="@application.css" />
-      <URL value="@options.css" />
-      <URL value="@gantt.css" />
-      <URL value="@table.css" />
-      <URL value="@overview.css" />
-      <URL value="@dialog.css" />
+      <URL value="@css/application.css" />
+      <URL value="@css/options.css" />
+      <URL value="@css/tabs.css" />
+      <URL value="@css/gantt.css" />
+      <URL value="@css/table.css" />
+      <URL value="@css/overview.css" />
+      <URL value="@css/dialog.css" />
    </stylesheets>
 
    <top>
@@ -103,9 +104,7 @@
    <left>
       <VBox fx:id="options" minHeight="0.0" prefWidth="313.0" styleClass="options">
          <children>
-            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" minHeight="0.0" styleClass="options-scroll-pane" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
-               <content>
-                  <VBox minHeight="0.0">
+            <VBox minHeight="0.0" styleClass="options-content" VBox.vgrow="ALWAYS">
                      <children>
                         <VBox>
                            <styleClass>
@@ -203,6 +202,7 @@
                            <styleClass>
                               <String fx:value="section-list" />
                               <String fx:value="option-section" />
+                              <String fx:value="process-section" />
                            </styleClass>
                            <children>
                               <Label styleClass="section-title" text="Process Settings" />
@@ -275,12 +275,10 @@
                            </styleClass>
                            <children>
                               <Button fx:id="runBtn" mnemonicParsing="false" onAction="#handleRun" styleClass="run-btn" text="RUN" />
-                           </children>
+                          </children>
                         </VBox>
                      </children>
                   </VBox>
-               </content>
-            </ScrollPane>
          </children>
          <BorderPane.margin>
             <Insets bottom="1.0" />
@@ -359,7 +357,7 @@
                      </columnResizePolicy>
                   </TableView>
 
-                  <VBox minHeight="306.0" prefHeight="306.0" prefWidth="260.0" stylesheets="@overview.css">
+                  <VBox minHeight="306.0" prefHeight="306.0" prefWidth="260.0" stylesheets="@css/overview.css">
                      <children>
                         <Label styleClass="section-title" text="Overview" />
 

@@ -16,23 +16,25 @@ public final class OverviewMetricsCalculator {
 
 	private final List<Process> processList;
 	private final Supplier<List<String>> coreLabelsSupplier;
-	private final Function<String, Integer> coreCountProvider;
+	private final Function<CoreType, Integer> coreCountProvider;
 
 	public OverviewMetricsCalculator(
 			List<Process> processList,
 			Supplier<List<String>> coreLabelsSupplier,
-			Function<String, Integer> coreCountProvider) {
+			Function<CoreType, Integer> coreCountProvider) {
 		this.processList = processList;
 		this.coreLabelsSupplier = coreLabelsSupplier;
 		this.coreCountProvider = coreCountProvider;
 	}
 
+	// Overview에 필요한 표시 문자열을 한 번에 계산한다.
+	// result가 null이면 아직 실행 전 상태이므로 모든 성능 지표를 0 또는 '-'에 가까운 값으로 만든다.
 	public OverviewMetrics calculate(SchedulingResult result, int totalTime) {
 		List<String> coreLabels = coreLabelsSupplier.get();
 
 		return new OverviewMetrics(
-				formatCoreSummary(result, coreLabels, "P-Core", totalTime),
-				formatCoreSummary(result, coreLabels, "E-Core", totalTime),
+				formatCoreSummary(result, coreLabels, CoreType.P_CORE, totalTime),
+				formatCoreSummary(result, coreLabels, CoreType.E_CORE, totalTime),
 				String.valueOf(processList.size()),
 				String.valueOf(totalTime),
 				formatDecimal(calculateThroughput(totalTime)),
@@ -44,7 +46,9 @@ public final class OverviewMetricsCalculator {
 				String.valueOf(calculateIdleTime(result, coreLabels, totalTime)));
 	}
 
-	private String formatCoreSummary(SchedulingResult result, List<String> coreLabels, String coreType, int totalTime) {
+	// Core 종류별 사용률과 소비 전력을 "57.5% / 140.0W" 형식으로 만든다.
+	// 개수는 CoreSelectionController가 제공하고, 사용 시간은 Gantt 블록에서 계산한다.
+	private String formatCoreSummary(SchedulingResult result, List<String> coreLabels, CoreType coreType, int totalTime) {
 		double utilization = calculateCoreUtilization(result, coreLabels, coreType, totalTime);
 		double power = calculateCorePower(result, coreLabels, coreType);
 		return formatPercent(utilization) + " / " + formatPower(power);
@@ -77,6 +81,7 @@ public final class OverviewMetricsCalculator {
 				.orElse(0.0);
 	}
 
+	// 각 프로세스가 처음 실행되기까지 걸린 시간을 평균낸다.
 	private double averageResponseTime(SchedulingResult result) {
 		if (result == null || processList.isEmpty()) {
 			return 0.0;
@@ -94,6 +99,7 @@ public final class OverviewMetricsCalculator {
 				.orElse(0.0);
 	}
 
+	// 전체 Core 시간 대비 실제 작업이 수행된 시간의 비율을 계산한다.
 	private double calculateCpuUtilization(SchedulingResult result, List<String> coreLabels, int totalTime) {
 		if (result == null || totalTime <= 0 || coreLabels.isEmpty()) {
 			return 0.0;
@@ -106,7 +112,7 @@ public final class OverviewMetricsCalculator {
 	private double calculateCoreUtilization(
 			SchedulingResult result,
 			List<String> coreLabels,
-			String coreType,
+			CoreType coreType,
 			int totalTime) {
 		int coreCount = countCoreType(coreType);
 		if (result == null || totalTime <= 0 || coreLabels.isEmpty() || coreCount == 0) {
@@ -117,18 +123,19 @@ public final class OverviewMetricsCalculator {
 		return (double) busyTime / (totalTime * coreCount);
 	}
 
-	private double calculateCorePower(SchedulingResult result, List<String> coreLabels, String coreType) {
+	// 소비 전력은 과제 명세에 맞춰 실행 시간 전력 + 시동 전력으로 계산한다.
+	// 쉬던 Core가 새 블록을 시작할 때마다 startup event로 보고 시동 전력을 더한다.
+	private double calculateCorePower(SchedulingResult result, List<String> coreLabels, CoreType coreType) {
 		if (countCoreType(coreType) == 0) {
 			return 0.0;
 		}
 
-		CoreType type = toCoreType(coreType);
 		int busyTime = calculateBusyTimeForCoreType(result, coreLabels, coreType);
 		int startupEvents = countStartupEventsForType(result, coreLabels, coreType);
-		return startupEvents * type.getStartupPower() + busyTime * type.getPowerPerSecond();
+		return startupEvents * coreType.getStartupPower() + busyTime * coreType.getPowerPerSecond();
 	}
 
-	private int calculateBusyTimeForCoreType(SchedulingResult result, List<String> coreLabels, String coreType) {
+	private int calculateBusyTimeForCoreType(SchedulingResult result, List<String> coreLabels, CoreType coreType) {
 		if (result == null || coreLabels.isEmpty()) {
 			return 0;
 		}
@@ -136,14 +143,18 @@ public final class OverviewMetricsCalculator {
 		int busyTime = 0;
 		for (GanttBlock block : result.getGanttBlocks()) {
 			int laneIndex = block.getCoreIndex();
-			if (laneIndex >= 0 && laneIndex < coreLabels.size() && coreLabels.get(laneIndex).startsWith(coreType)) {
+			if (laneIndex >= 0
+					&& laneIndex < coreLabels.size()
+					&& coreLabels.get(laneIndex).startsWith(coreType.getDisplayName())) {
 				busyTime += block.getEnd() - block.getStart();
 			}
 		}
 		return busyTime;
 	}
 
-	private int countStartupEventsForType(SchedulingResult result, List<String> coreLabels, String coreType) {
+	// 같은 Core에서 이전 블록과 바로 이어지면 계속 사용 중으로 보고 시동 전력을 더하지 않는다.
+	// 블록 사이에 빈 시간이 있으면 미사용 상태에서 다시 켜진 것으로 계산한다.
+	private int countStartupEventsForType(SchedulingResult result, List<String> coreLabels, CoreType coreType) {
 		if (result == null || coreLabels.isEmpty()) {
 			return 0;
 		}
@@ -153,7 +164,9 @@ public final class OverviewMetricsCalculator {
 
 		for (GanttBlock block : result.getGanttBlocks()) {
 			int laneIndex = block.getCoreIndex();
-			if (laneIndex >= 0 && laneIndex < coreLabels.size() && coreLabels.get(laneIndex).startsWith(coreType)) {
+			if (laneIndex >= 0
+					&& laneIndex < coreLabels.size()
+					&& coreLabels.get(laneIndex).startsWith(coreType.getDisplayName())) {
 				Integer lastEnd = lastEndByCore.get(laneIndex);
 				if (lastEnd == null || lastEnd < block.getStart()) {
 					startupEvents++;
@@ -163,10 +176,6 @@ public final class OverviewMetricsCalculator {
 		}
 
 		return startupEvents;
-	}
-
-	private CoreType toCoreType(String coreType) {
-		return "P-Core".equals(coreType) ? CoreType.P_CORE : CoreType.E_CORE;
 	}
 
 	private int calculateIdleTime(SchedulingResult result, List<String> coreLabels, int totalTime) {
@@ -184,6 +193,7 @@ public final class OverviewMetricsCalculator {
 				.sum();
 	}
 
+	// 같은 Core에서 이전 프로세스와 다른 프로세스로 바뀐 횟수를 계산한다.
 	private int countContextSwitches(SchedulingResult result) {
 		if (result == null || result.getGanttBlocks().size() < 2) {
 			return 0;
@@ -203,7 +213,7 @@ public final class OverviewMetricsCalculator {
 		return switchCount;
 	}
 
-	private int countCoreType(String coreType) {
+	private int countCoreType(CoreType coreType) {
 		Integer count = coreCountProvider.apply(coreType);
 		return count == null ? 0 : count;
 	}
