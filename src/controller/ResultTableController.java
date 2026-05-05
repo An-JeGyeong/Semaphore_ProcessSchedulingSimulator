@@ -9,6 +9,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import model.Process;
+import util.ProcessColorPalette;
 
 final class ResultTableController {
 
@@ -20,6 +21,7 @@ final class ResultTableController {
 	private final TableColumn<Process, Integer> ttColumn;
 	private final TableColumn<Process, Double> nttColumn;
 
+	// 결과 테이블과 각 컬럼 참조를 받아 컬럼 초기화와 데이터 교체를 전담한다.
 	ResultTableController(
 			TableView<Process> resultTable,
 			TableColumn<Process, String> pidColumn,
@@ -37,6 +39,7 @@ final class ResultTableController {
 		this.nttColumn = nttColumn;
 	}
 
+	// 결과 테이블 컬럼과 프로세스 색상 렌더링을 초기화한다.
 	void initialize() {
 		pidColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPid()));
 		pidColumn.setCellFactory(column -> new TableCell<>() {
@@ -69,10 +72,12 @@ final class ResultTableController {
 		});
 	}
 
+	// 테이블에 표시할 프로세스 목록을 교체한다.
 	void setProcesses(List<Process> processes) {
 		resultTable.getItems().setAll(processes);
 	}
 
+	// 기존 행 높이와 스타일을 유지하면서 테이블을 다시 그린다.
 	void refresh() {
 		resultTable.refresh();
 	}

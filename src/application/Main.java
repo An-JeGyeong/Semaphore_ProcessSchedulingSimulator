@@ -1,5 +1,8 @@
 package application;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +16,9 @@ import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
+	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+
+	// JavaFX 애플리케이션을 시작하고 main.fxml 기반의 메인 창을 띄운다.
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -28,12 +34,15 @@ public class Main extends Application {
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+
 			fitStageToScreen(primaryStage);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Failed to start application.", e);
 		}
 	}
 
+
+	// 사용 가능한 화면 크기에 맞춰 초기 창 크기를 제한한다.
 	private void fitStageToScreen(Stage stage) {
 		var bounds = Screen.getPrimary().getVisualBounds();
 
@@ -43,7 +52,6 @@ public class Main extends Application {
 		if (stage.getHeight() > bounds.getHeight()) {
 			stage.setHeight(bounds.getHeight());
 		}
-
 		if (stage.getX() < bounds.getMinX() || stage.getX() + stage.getWidth() > bounds.getMaxX()) {
 			stage.setX(bounds.getMinX() + Math.max(0, (bounds.getWidth() - stage.getWidth()) / 2));
 		}
@@ -52,6 +60,7 @@ public class Main extends Application {
 		}
 	}
 
+	// 커스텀 undecorated 창의 모서리에 라운드 클립을 적용한다.
 	private void applyWindowClip(Parent root) {
 		Rectangle clip = new Rectangle();
 		clip.setArcWidth(10);
@@ -61,6 +70,8 @@ public class Main extends Application {
 		root.setClip(clip);
 	}
 
+
+	// 화면 전체에서 사용하는 Noto Sans 폰트를 미리 로드한다.
 	private void loadFonts() {
 		loadFont("/view/fonts/Noto_Sans/NotoSans-Regular.ttf");
 		loadFont("/view/fonts/Noto_Sans/NotoSans-Bold.ttf");
@@ -74,7 +85,7 @@ public class Main extends Application {
 				Font.loadFont(stream, 12);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING, "Failed to load font: " + resourcePath, e);
 		}
 	}
 

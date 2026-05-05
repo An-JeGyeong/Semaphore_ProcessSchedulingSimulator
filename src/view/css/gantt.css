@@ -1,0 +1,57 @@
+/* Gantt area */
+.gantt-canvas {
+    -fx-background-color: #212121;
+}
+
+.gantt-scroll-pane {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.gantt-scroll-pane .viewport {
+    -fx-background-color: #212121;
+}
+
+.gantt-scroll-pane .corner {
+    -fx-background-color: #212121;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: #212121;
+    -fx-pref-height: 34;
+    -fx-padding: 8 24 20 130;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .track {
+    -fx-background-color: #E8E8E8;
+    -fx-background-radius: 2;
+    -fx-pref-height: 3;
+    -fx-max-height: 3;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: #C85B34;
+    -fx-background-radius: 4;
+    -fx-pref-height: 5;
+    -fx-max-height: 5;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .increment-button,
+.gantt-scroll-pane .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+.gantt-scroll-pane .scroll-bar:horizontal .increment-arrow,
+.gantt-scroll-pane .scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-shape: "";
+}

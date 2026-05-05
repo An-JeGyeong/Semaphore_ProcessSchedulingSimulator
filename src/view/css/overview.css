@@ -1,0 +1,83 @@
+/* Overview panel */
+.overview-panel {
+    -fx-background-color: #262626;
+    -fx-border-color: #303030;
+}
+
+.overview-title {
+    -fx-padding: 15 0 8 0;
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 14px;
+    -fx-text-fill: #A6A6A6;
+}
+
+.overview-list {
+    -fx-spacing: 7;
+    -fx-padding: 0 10 8 10;
+    -fx-fill-width: true;
+}
+
+.overview-scroll-pane {
+    -fx-background-color: #262626;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.overview-scroll-pane > .viewport {
+    -fx-background-color: #262626;
+}
+
+.overview-scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 6;
+    -fx-background-color: #262626;
+}
+
+.overview-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #262626;
+}
+
+.overview-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #4A4A4A;
+    -fx-background-radius: 3;
+}
+
+.overview-scroll-pane .scroll-bar .increment-button,
+.overview-scroll-pane .scroll-bar .decrement-button,
+.overview-scroll-pane .scroll-bar .increment-arrow,
+.overview-scroll-pane .scroll-bar .decrement-arrow {
+    -fx-padding: 0;
+    -fx-shape: "";
+}
+
+.overview-content {
+    -fx-spacing: 5;
+    -fx-fill-width: true;
+}
+
+.overview-section-title {
+    -fx-padding: 3 0 0 0;
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 11px;
+    -fx-text-fill: #A6A6A6;
+}
+
+.overview-card {
+    -fx-background-color: #262626;
+    -fx-border-color: #303030;
+    -fx-background-radius: 5;
+    -fx-border-radius: 8;
+    -fx-padding: 6 18 6 18;
+    -fx-spacing: 8;
+    -fx-alignment: center;
+}
+
+.overview-label,
+.overview-value {
+    -fx-font-family: "Noto Sans";
+    -fx-font-size: 12px;
+    -fx-text-fill: #A6A6A6;
+}
+
+.overview-label {
+    -fx-max-width: Infinity;
+}
