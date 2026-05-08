@@ -1,0 +1,7 @@
+# Codex temporary build outputs
+.codex-build*/
+.codex-fxml-verify-clean/
+.rollback-restore/
+
+# Java build outputs
+*.class
